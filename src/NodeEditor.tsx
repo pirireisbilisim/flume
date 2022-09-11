@@ -38,6 +38,7 @@ import {
   NodeMap,
   NodeTypeMap,
   PortTypeMap,
+  ResolvedValues,
   Toast
 } from "./types";
 
@@ -61,6 +62,7 @@ interface NodeEditorProps {
   circularBehavior?: CircularBehavior;
   renderNodeHeader?: NodeHeaderRenderCallback;
   debug?: boolean;
+  resolvedValues: ResolvedValues;
 }
 
 export let NodeEditor = React.forwardRef(
@@ -82,7 +84,8 @@ export let NodeEditor = React.forwardRef(
       disablePan = false,
       circularBehavior,
       renderNodeHeader,
-      debug
+      debug,
+      resolvedValues
     }: NodeEditorProps,
     ref
   ) => {
@@ -256,6 +259,7 @@ export let NodeEditor = React.forwardRef(
                               onDragStart={recalculateStageRect}
                               renderNodeHeader={renderNodeHeader}
                               key={node.id}
+                              resolvedPortValues={resolvedValues && resolvedValues[node.id]}
                             />
                           ))}
                           <Connections editorId={editorId} />

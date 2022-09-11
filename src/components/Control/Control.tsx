@@ -180,7 +180,8 @@ const Control = (props: ControlProps) => {
             inputLabel,
             defaultValue
           },
-          allData
+          allData,
+          nodeId
         ) ?? null;
       }
       default:

@@ -2,6 +2,17 @@ import { HTMLProps, ReactNode } from "react";
 
 export type InputData = { [portName: string]: { [controlName: string]: any } };
 
+export type ResolvedPortValue = {[portName: string]: any};
+
+export type ResolvedPortValues = {
+    inputs: ResolvedPortValue,
+    outputs: ResolvedPortValue,
+}
+
+export type ResolvedValues = {
+  [nodeId: string]: ResolvedPortValues
+}
+
 export type ControlTypes =
   | "text"
   | "number"
@@ -65,7 +76,8 @@ export type ControlRenderCallback = (
     inputLabel: string;
     defaultValue: any;
   },
-  inputData: InputData
+  inputData: InputData,
+  nodeId: string
 ) => ReactNode;
 
 export interface CustomControl {
@@ -98,6 +110,8 @@ export type Colors =
   | "blue"
   | "green"
   | "grey";
+
+export type OutputPortLabelRenderCallback = (resolvedValue: any, label: string) => (ReactNode | undefined);
 
 export interface PortType {
   /**
@@ -136,6 +150,10 @@ export interface PortType {
    * An array of port type strings. Only port types included in this array will be allowed to connect to this port. By default ports always accept their own type.
    */
   acceptTypes: string[];
+  /**,
+   * Allows customization of output port labels
+   */
+  renderResult: OutputPortLabelRenderCallback;
 }
 
 export type PortTypeMap = { [portType: string]: PortType };

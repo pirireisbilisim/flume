@@ -8,7 +8,8 @@ import {
   NodeType,
   NodeTypeMap,
   Connections,
-  RootEngineOptions
+  RootEngineOptions,
+  ResolvedValues
 } from "./types";
 import { FlumeConfig } from "./typeBuilders";
 
@@ -28,6 +29,7 @@ export class RootEngine {
   private fireNodeFunction: NodeResolver;
   private loops: number;
   private maxLoops: number;
+  private resultCache: ResolvedValues;
 
   constructor(
     config: FlumeConfig,
@@ -39,6 +41,7 @@ export class RootEngine {
     this.resolveInputControls = resolveInputControls;
     this.loops = 0;
     this.maxLoops = 1000;
+    this.resultCache = {};
   }
   private resetLoops = (maxLoops?: number) => {
     this.maxLoops = maxLoops !== undefined ? maxLoops : 1000;
@@ -122,8 +125,12 @@ export class RootEngine {
       inputValues,
       outputNodeType,
       context
-    )[connection.portName];
-    return outputResult;
+    );
+    this.resultCache[connection.nodeId] = {
+      inputs: inputValues,
+      outputs: outputResult,
+    };
+    return outputResult[connection.portName];
   };
   public resolveRootNode(nodes: NodeMap, rawOptions?: RootEngineOptions) {
     const options = rawOptions ?? {};
@@ -186,5 +193,20 @@ export class RootEngine {
       );
       return {};
     }
+  }
+
+  public resolveAllNodes(nodes: NodeMap, rawOptions?: RootEngineOptions) : ResolvedValues {
+    const options = rawOptions || {};
+    this.resultCache = {};
+    Object.keys(nodes).forEach((key) => {
+      this.getValueOfConnection(
+        {nodeId: key, portName: ''},
+        nodes,
+        options.context || {}
+      )
+    });
+    const resultCache = this.resultCache;
+    this.resultCache = {};
+    return resultCache;
   }
 }

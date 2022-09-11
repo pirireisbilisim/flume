@@ -17,6 +17,7 @@ import {
   Coordinate,
   InputData,
   NodeHeaderRenderCallback,
+  ResolvedPortValues,
   SelectOption
 } from "../../types";
 import { NodesActionType } from "../../nodesReducer";
@@ -32,6 +33,7 @@ interface NodeProps {
   inputData: InputData;
   onDragStart: () => void;
   renderNodeHeader?: NodeHeaderRenderCallback;
+  resolvedPortValues: ResolvedPortValues;
 }
 
 const Node = ({
@@ -44,7 +46,8 @@ const Node = ({
   type,
   inputData,
   onDragStart,
-  renderNodeHeader
+  renderNodeHeader,
+  resolvedPortValues
 }: NodeProps) => {
   const cache = React.useContext(CacheContext) ?? undefined;
   const nodeTypes = React.useContext(NodeTypesContext) ?? {};
@@ -224,6 +227,7 @@ const Node = ({
         connections={connections}
         updateNodeConnections={updateNodeConnections}
         inputData={inputData}
+        resolvedPortValues={resolvedPortValues}
       />
       {menuOpen ? (
         <Portal>

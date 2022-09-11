@@ -120,3 +120,7 @@ Actions is an object of functions which operate in the context of the current no
 - openMenu: Opens the context menu for the node.
 - closeMenu: Closes the context menu for the node.
 - deleteNode: Deletes the current node.
+
+### `resolvedValues` : object
+
+Optional. If you set this to the result of running the `RootEngine.resolveAllNodes` function, then you can display the output values from each node by adding a `renderResult` function to your `addPortType` calls.

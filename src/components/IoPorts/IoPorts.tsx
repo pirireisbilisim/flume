@@ -19,8 +19,11 @@ import {
   Connections,
   Control as ControlType,
   InputData,
+  OutputPortLabelRenderCallback,
   PortType,
   PortTypeMap,
+  ResolvedPortValue,
+  ResolvedPortValues,
   TransputBuilder,
   TransputType
 } from "../../types";
@@ -73,6 +76,7 @@ interface IoPortsProps {
   connections: Connections;
   inputData: InputData;
   updateNodeConnections: () => void;
+  resolvedPortValues: ResolvedPortValues;
 }
 
 const IoPorts = ({
@@ -81,7 +85,8 @@ const IoPorts = ({
   outputs = [],
   connections,
   inputData,
-  updateNodeConnections
+  updateNodeConnections,
+  resolvedPortValues
 }: IoPortsProps) => {
   const inputTypes = React.useContext(PortTypesContext);
   const triggerRecalculation = React.useContext(ConnectionRecalculateContext);
@@ -128,6 +133,7 @@ const IoPorts = ({
               inputTypes={inputTypes}
               nodeId={nodeId}
               key={output.name}
+              resolvedPortValue={resolvedPortValues && resolvedPortValues.outputs[output.name]}
             />
           ))}
         </div>
@@ -236,6 +242,8 @@ interface OutputProps {
   type;
   inputTypes;
   triggerRecalculation;
+  renderResult: OutputPortLabelRenderCallback;
+  resolvedPortValue: ResolvedPortValue,
 }
 
 const Output = ({
@@ -244,9 +252,13 @@ const Output = ({
   nodeId,
   type,
   inputTypes,
-  triggerRecalculation
-}) => {
-  const { label: defaultLabel, color } = inputTypes[type] || {};
+  triggerRecalculation,
+  renderResult: localRenderResult,
+  resolvedPortValue,
+}: OutputProps) => {
+  const { label: defaultLabel, color, renderResult: defaultRenderResult } = inputTypes[type] || {};
+
+  const renderResult = localRenderResult || defaultRenderResult;
 
   return (
     <div
@@ -258,9 +270,14 @@ const Output = ({
         e.stopPropagation();
       }}
     >
-      <label data-flume-component="port-label" className={styles.portLabel}>
-        {label || defaultLabel}
-      </label>
+      {!renderResult && (
+        <label data-flume-component="port-label" className={styles.portLabel}>
+          {label || defaultLabel}
+        </label>
+      )}
+
+      {renderResult && renderResult(resolvedPortValue, label || defaultLabel)}
+      
       <Port
         type={type}
         name={name}
