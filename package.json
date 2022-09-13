@@ -1,6 +1,6 @@
 {
-  "name": "flume",
-  "version": "1.0.0-1",
+  "name": "@pirireis/flume",
+  "version": "1.0.0",
   "description": "A node editor for React",
   "author": "chrisjpatty",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "npm": ">=5"
   },
   "scripts": {
-    "test": "cross-env CI=1 react-scripts test --env=jsdom && npx cypress run",
+    "test": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
     "build": "rollup -c",
     "start": "rollup -c -w",

@@ -197,6 +197,7 @@ export class RootEngine {
 
   public resolveAllNodes(nodes: NodeMap, rawOptions?: RootEngineOptions) : ResolvedValues {
     const options = rawOptions || {};
+    this.resetLoops(options.maxLoops);
     this.resultCache = {};
     Object.keys(nodes).forEach((key) => {
       this.getValueOfConnection(
